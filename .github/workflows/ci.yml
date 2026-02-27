@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-scan:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,5 +20,14 @@ jobs:
       run: |
         cd app
         docker build -t devsecops-flask-app .
+
+    - name: Run Trivy Vulnerability Scan
+      uses: aquasecurity/trivy-action@0.20.0
+      with:
+        image-ref: devsecops-flask-app
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: CRITICAL,HIGH
 
     
