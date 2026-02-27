@@ -1,0 +1,20 @@
+name: DevSecOps CI Pipeline
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Show Repository Files
+      run: ls -la
+
+    - name: print Success Message
+      run: echo "CI Pipeline is running successfully!"
