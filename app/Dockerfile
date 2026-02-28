@@ -1,21 +1,18 @@
-# Python Image
 FROM python:3.11-slim
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# copy the requirements file into the container
+# Prevent Python from writing .pyc files
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 COPY requirements.txt .
 
-# Install the dependencies
 RUN pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir -r requirements.txt \
+    && apt-get update && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the rest of the application code into the container
-COPY app.py .
+COPY . .
 
-# Expose the port that the application will run on
-EXPOSE 5000
-
-# Command to run the application
 CMD ["python", "app.py"]
