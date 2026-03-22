@@ -35,12 +35,12 @@ jobs:
 
     - name: Terraform Init
       run: |
-        cd infrastructure
+        cd terraform
         terraform init
 
     - name: Terraform Apply
       run: |
-        cd infrastructure
+        cd terraform
         terraform apply -auto-approve
 
     
