@@ -22,7 +22,7 @@ jobs:
         docker build -t devsecops-flask-app .
 
     - name: Run Trivy Vulnerability Scan
-      uses: aquasecurity/trivy-action@0.20.0
+      uses: aquasecurity/trivy-action@master
       with:
         image-ref: devsecops-flask-app
         format: 'table'
