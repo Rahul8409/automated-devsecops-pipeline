@@ -30,4 +30,17 @@ jobs:
         ignore-unfixed: true
         severity: CRITICAL,HIGH
 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Init
+      run: |
+        cd infrastructure
+        terraform init
+
+    - name: Terraform Apply
+      run: |
+        cd infrastructure
+        terraform apply -auto-approve
+
     
