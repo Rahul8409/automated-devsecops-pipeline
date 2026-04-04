@@ -1,14 +1,13 @@
-from flask import Flask, jsonify
-
+from flask import Flask, render_template, jsonify
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-	return "DevSecOps Pipeline is Working!"
+	return render_template("home.html")
 
 @app.route("/health")
 def health():
-	return jsonify(status="UP", service="devsecops-app")
+	return jsonify(status="healthy")
 
 @app.route("/version")
 def version():
@@ -16,3 +15,4 @@ def version():
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0",port=5000)
+ 
