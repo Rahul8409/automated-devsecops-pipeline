@@ -1,22 +1,455 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>The Gym</title>
-	<link rel="stylesheet" href="{{url_for('static', filename = 'assets/bootstrap/css/bootstrap.min.css')}}">
-	<link rel="stylesheet" href="{{url_for('static', filename = 'assets/bootstrap/css/bootstrap-theme.min.css')}}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shivam Gym Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #161616;
+            --bg-card-hover: #1c1c1c;
+            --accent: #e8ff00;
+            --accent-dim: rgba(232, 255, 0, 0.12);
+            --accent-red: #ff3b3b;
+            --text-primary: #f0f0f0;
+            --text-secondary: #888;
+            --text-muted: #555;
+            --border: rgba(255,255,255,0.07);
+            --border-accent: rgba(232, 255, 0, 0.3);
+            --font-display: 'Barlow Condensed', sans-serif;
+            --font-body: 'Barlow', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-primary);
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(232,255,0,0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(255,59,59,0.03) 0%, transparent 50%);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-weight: 400;
+            min-height: 100vh;
+        }
+
+        .gc-navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(10,10,10,0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+        }
+
+        .gc-navbar-brand {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gc-navbar-brand span {
+            color: var(--accent);
+        }
+
+        .gc-brand-dot {
+            width: 8px; height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .gc-navbar-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .gc-nav-user {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .gc-nav-user strong {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .gc-nav-link {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .gc-nav-link:hover {
+            color: var(--accent);
+            border-color: var(--border-accent);
+            background: var(--accent-dim);
+        }
+
+        .gc-nav-link.danger:hover {
+            color: var(--accent-red);
+            border-color: rgba(255,59,59,0.3);
+            background: rgba(255,59,59,0.08);
+        }
+
+        .gc-page {
+            padding-top: 88px;
+            padding-bottom: 48px;
+            min-height: 100vh;
+        }
+
+        .gc-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        .gc-alerts {
+            margin-bottom: 24px;
+        }
+
+        .gc-alert {
+            padding: 14px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 3px solid;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gc-alert.success {
+            background: rgba(0,200,100,0.08);
+            border-color: #00c864;
+            color: #00c864;
+        }
+
+        .gc-alert.danger {
+            background: rgba(255,59,59,0.08);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .gc-alert.info {
+            background: rgba(0,150,255,0.08);
+            border-color: #0096ff;
+            color: #0096ff;
+        }
+
+        .gc-alert.warning {
+            background: rgba(255,180,0,0.08);
+            border-color: #ffb400;
+            color: #ffb400;
+        }
+
+        .gc-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 28px;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .gc-card:hover {
+            border-color: rgba(255,255,255,0.12);
+            background: var(--bg-card-hover);
+        }
+
+        .gc-form-group {
+            margin-bottom: 20px;
+        }
+
+        .gc-label {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .gc-input {
+            width: 100%;
+            background: #0e0e0e;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 15px;
+            padding: 12px 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .gc-input:focus {
+            border-color: var(--border-accent);
+            box-shadow: 0 0 0 3px rgba(232,255,0,0.06);
+        }
+
+        .gc-btn {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 12px 28px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gc-btn-primary {
+            background: var(--accent);
+            color: #0a0a0a;
+        }
+
+        .gc-btn-primary:hover {
+            background: #f5ff40;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(232,255,0,0.25);
+        }
+
+        .gc-btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .gc-btn-outline:hover {
+            border-color: var(--border-accent);
+            color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .gc-btn-danger {
+            background: transparent;
+            color: var(--accent-red);
+            border: 1px solid rgba(255,59,59,0.25);
+        }
+
+        .gc-btn-danger:hover {
+            background: rgba(255,59,59,0.1);
+            border-color: var(--accent-red);
+        }
+
+        .gc-table-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .gc-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .gc-table thead tr {
+            background: #111;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .gc-table th {
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 14px 20px;
+            text-align: left;
+        }
+
+        .gc-table td {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .gc-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .gc-table tbody tr {
+            transition: background 0.15s;
+        }
+
+        .gc-table tbody tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .gc-badge {
+            display: inline-block;
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+
+        .gc-badge-basic    { background: rgba(0,150,255,0.15); color: #4db8ff; border: 1px solid rgba(0,150,255,0.2); }
+        .gc-badge-standard { background: rgba(0,200,100,0.12); color: #00c864; border: 1px solid rgba(0,200,100,0.2); }
+        .gc-badge-premium  { background: rgba(232,255,0,0.1);  color: var(--accent); border: 1px solid var(--border-accent); }
+        .gc-badge-default  { background: rgba(255,255,255,0.06); color: var(--text-secondary); border: 1px solid var(--border); }
+
+        .gc-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 32px 0;
+        }
+
+        .gc-section-title {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .gc-footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 48px;
+            font-family: var(--font-display);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            background: #0e0e0e !important;
+            border: 1px solid var(--border) !important;
+            color: var(--text-primary) !important;
+            border-radius: 6px !important;
+        }
+
+        .form-control:focus {
+            border-color: var(--border-accent) !important;
+            box-shadow: 0 0 0 3px rgba(232,255,0,0.06) !important;
+            background: #0e0e0e !important;
+        }
+
+        .jumbotron {
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 8px !important;
+            color: var(--text-primary) !important;
+        }
+
+        a { color: var(--accent); }
+        a:hover { color: #f5ff40; }
+
+        .btn-outline-info    { border-color: #0096ff !important; color: #4db8ff !important; }
+        .btn-outline-danger  { border-color: var(--accent-red) !important; color: var(--accent-red) !important; }
+        .btn-outline-secondary { border-color: var(--border) !important; color: var(--text-secondary) !important; }
+        .btn-outline-info:hover    { background: rgba(0,150,255,0.12) !important; }
+        .btn-outline-danger:hover  { background: rgba(255,59,59,0.1) !important; }
+        .btn-outline-secondary:hover { background: rgba(255,255,255,0.05) !important; }
+
+        .table { color: var(--text-primary) !important; }
+        .table-bordered { border-color: var(--border) !important; }
+        .table-bordered td, .table-bordered th { border-color: var(--border) !important; }
+    </style>
 </head>
-<body background="/static/image.jpg" style="background-repeat: no-repeat; background-size: cover;background-position: center; background-attachment: fixed;">
-	{% include 'includes/_navbar.html' %}
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<div class="container">
-		{% include 'includes/_messages.html' %}
-		{% block body %}{% endblock %}
-	</div>
-	<script src = "{{url_for('static', filename = 'assets/bootstrap/js/jquery.min.js')}}"></script>
-	<script src = "{{url_for('static', filename = 'assets/bootstrap/js/bootstrap.min.js')}}"></script>
+<body>
+
+    <nav class="gc-navbar">
+        <a href="/" class="gc-navbar-brand">
+            <div class="gc-brand-dot"></div>
+            SHIVAM<span> GYM</span>
+        </a>
+        <div class="gc-navbar-right">
+            {% if session.username %}
+                <span class="gc-nav-user">
+                    {% if session.prof == 1 %}ADMIN{% elif session.prof == 2 %}RECEPTIONIST{% elif session.prof == 3 %}TRAINER{% else %}MEMBER{% endif %}
+                    &nbsp;/&nbsp;<strong>{{ session.username }}</strong>
+                </span>
+                <a href="{{ url_for('logout') }}" class="gc-nav-link danger">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="gc-nav-link">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="gc-page">
+        <div class="gc-container">
+            <div class="gc-alerts">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="gc-alert {{ category }}">
+                                <span>●</span> {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+
+    <div class="gc-footer">
+        Shivam Gym Management &nbsp;·&nbsp; Built with Flask
+    </div>
+
+    <script src="{{ url_for('static', filename='assets/bootstrap/js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
 </body>
 </html>

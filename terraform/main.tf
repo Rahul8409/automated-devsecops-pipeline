@@ -23,3 +23,4 @@ resource "docker_container" "flask_container" {
     external = var.external_port
   }
 }
+

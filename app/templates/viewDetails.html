@@ -1,11 +1,31 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-	<div class="container">
-			{% for each in result %}
-		 <div class="form-group">
-			<a href = "{{url_for('profile', username = each['username'])}}"><button type ="button" class="btn btn-outline-warning" >{{each['username']}}</button></a>
-		</div>
-		 {% endfor %}			 
-	</div
+<div style="margin-bottom: 28px;">
+    <a href="javascript:history.back()" style="font-family: var(--font-display); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); text-decoration: none;">← Back</a>
+    <h2 style="font-family: var(--font-display); font-size: 36px; font-weight: 800; margin-top: 12px;">All <span style="color: var(--accent);">Users</span></h2>
+</div>
+
+<div class="gc-table-wrap">
+    {% if result %}
+    <table class="gc-table">
+        <thead><tr><th>#</th><th>Username</th><th>Action</th></tr></thead>
+        <tbody>
+            {% for r in result %}
+            <tr>
+                <td style="color:var(--text-muted);font-size:12px;">{{ loop.index }}</td>
+                <td style="font-weight:600;">{{ r.username }}</td>
+                <td>
+                    <a href="{{ url_for('profile', username=r.username) }}" class="gc-btn gc-btn-outline" style="padding: 6px 14px; font-size: 12px;">View Profile</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="padding:48px;text-align:center;color:var(--text-muted);">
+        <p style="font-family:var(--font-display);letter-spacing:2px;text-transform:uppercase;">No users found</p>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

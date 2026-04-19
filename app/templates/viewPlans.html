@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div style="margin-bottom:28px;">
+    <a href="{{ url_for('adminDash') }}" style="font-family:var(--font-display);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);text-decoration:none;">← Back</a>
+    <h2 style="font-family:var(--font-display);font-size:36px;font-weight:800;margin-top:12px;">Plan <span style="color:var(--accent);">Details</span></h2>
+</div>
+<div class="gc-table-wrap">
+    <table class="gc-table">
+        <thead><tr><th>Plan</th><th>Exercise</th><th>Sets</th><th>Reps</th></tr></thead>
+        <tbody>
+            {% for p in plans %}
+            <tr>
+                <td>
+                    {% set pl = p.name | lower %}
+                    {% if 'basic' in pl %}<span class="gc-badge gc-badge-basic">{{ p.name }}</span>
+                    {% elif 'standard' in pl %}<span class="gc-badge gc-badge-standard">{{ p.name }}</span>
+                    {% elif 'premium' in pl %}<span class="gc-badge gc-badge-premium">{{ p.name }}</span>
+                    {% else %}<span class="gc-badge gc-badge-default">{{ p.name }}</span>{% endif %}
+                </td>
+                <td style="font-weight:600;">{{ p.exercise }}</td>
+                <td style="color:var(--accent);font-family:var(--font-display);font-weight:700;">{{ p.sets }}</td>
+                <td style="color:#4db8ff;font-family:var(--font-display);font-weight:700;">{{ p.reps }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

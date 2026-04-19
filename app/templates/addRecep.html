@@ -1,34 +1,55 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-<div class="text-white">
-	<h1 style="font-family: Georgia, serif;">Enter Details</h1>
-  <div class="font-italic">
-  {% from "includes/_formhelpers.html" import render_field %}
-  <form method="POST" action="">
-    <div class="form-group">
-      {{render_field(form.name, class_="form-control")}}
+<div style="max-width: 560px; margin: 0 auto;">
+    <div style="margin-bottom: 28px;">
+        <a href="{{ url_for('adminDash') }}" style="font-family: var(--font-display); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); text-decoration: none;">← Back to Dashboard</a>
+        <h2 style="font-family: var(--font-display); font-size: 36px; font-weight: 800; margin-top: 12px;">Add <span style="color: var(--accent);">Receptionist</span></h2>
     </div>
-    <div class="form-group">
-      {{render_field(form.username, class_="form-control")}}
+
+    <div class="gc-card" style="border-top: 2px solid #4db8ff;">
+        <form action="" method="POST">
+            <div class="gc-form-group">
+                <label class="gc-label">Full Name</label>
+                <input type="text" name="name" class="gc-input" value="{{ request.form.name }}" placeholder="Full name">
+            </div>
+            <div class="gc-form-group">
+                <label class="gc-label">Username</label>
+                <input type="text" name="username" class="gc-input" value="{{ request.form.username }}" placeholder="Unique username">
+            </div>
+            <div class="gc-form-group">
+                <label class="gc-label">Password</label>
+                <input type="password" name="password" class="gc-input" placeholder="Set a password">
+            </div>
+            <div class="gc-form-group">
+                <label class="gc-label">Confirm Password</label>
+                <input type="password" name="confirm" class="gc-input" placeholder="Repeat password">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="gc-form-group">
+                    <label class="gc-label">Street</label>
+                    <input type="text" name="street" class="gc-input" value="{{ request.form.street }}" placeholder="Street">
+                </div>
+                <div class="gc-form-group">
+                    <label class="gc-label">City</label>
+                    <input type="text" name="city" class="gc-input" value="{{ request.form.city }}" placeholder="City">
+                </div>
+            </div>
+            <div class="gc-form-group" style="margin-bottom: 28px;">
+                <label class="gc-label">Phone</label>
+                <input type="text" name="phone" class="gc-input" value="{{ request.form.phone }}" placeholder="Phone number">
+            </div>
+
+            {% for field in form %}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <p style="color: var(--accent-red); font-size: 13px; margin-bottom: 8px;">⚠ {{ field.label.text }}: {{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+
+            <button type="submit" class="gc-btn gc-btn-primary" style="width: 100%; justify-content: center;">Add Receptionist →</button>
+        </form>
     </div>
-    <div class="form-group">
-      {{render_field(form.password, class_="form-control")}}
-    </div>
-    <div class="form-group">
-      {{render_field(form.confirm, class_="form-control")}}
-    </div>
-     <div class="form-group">
-      {{render_field(form.street, class_="form-control")}}
-    </div>
-     <div class="form-group">
-      {{render_field(form.city, class_="form-control")}}
-    </div>
-     <div class="form-group">
-      {{render_field(form.phone, class_="form-control")}}
-    </div>
-    <p><input type="submit" class="btn btn-primary" value="Submit"></p>
-  </form>
-</div>
 </div>
 {% endblock %}

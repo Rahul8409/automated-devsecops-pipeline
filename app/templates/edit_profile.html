@@ -1,25 +1,36 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-<div class="text-white">
-	<h1 style="font-family: Georgia, serif;">Edit Profile</h1>
-  <div class="font-italic">
-  {% from "includes/_formhelpers.html" import render_field %}
-  <form method="POST" action="">
-    <div class="form-group">
-      {{render_field(form.name, class_="form-control")}}
+<div style="max-width: 480px; margin: 0 auto;">
+    <div style="margin-bottom: 28px;">
+        <a href="javascript:history.back()" style="font-family: var(--font-display); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); text-decoration: none;">← Back</a>
+        <h2 style="font-family: var(--font-display); font-size: 36px; font-weight: 800; margin-top: 12px;">Edit <span style="color: var(--accent);">Profile</span></h2>
     </div>
-    <div class="form-group">
-      {{render_field(form.street, class_="form-control")}}
+
+    <div class="gc-card" style="border-top: 2px solid var(--accent);">
+        <form action="" method="POST">
+            <div class="gc-form-group">
+                <label class="gc-label">Full Name</label>
+                {{ form.name(class="gc-input", placeholder="Your full name") }}
+                {% if form.name.errors %}{% for e in form.name.errors %}<p style="color:var(--accent-red);font-size:13px;margin-top:6px;">⚠ {{ e }}</p>{% endfor %}{% endif %}
+            </div>
+            <div class="gc-form-group">
+                <label class="gc-label">Street</label>
+                {{ form.street(class="gc-input", placeholder="Street address") }}
+                {% if form.street.errors %}{% for e in form.street.errors %}<p style="color:var(--accent-red);font-size:13px;margin-top:6px;">⚠ {{ e }}</p>{% endfor %}{% endif %}
+            </div>
+            <div class="gc-form-group">
+                <label class="gc-label">City</label>
+                {{ form.city(class="gc-input", placeholder="City") }}
+                {% if form.city.errors %}{% for e in form.city.errors %}<p style="color:var(--accent-red);font-size:13px;margin-top:6px;">⚠ {{ e }}</p>{% endfor %}{% endif %}
+            </div>
+            <div class="gc-form-group" style="margin-bottom: 28px;">
+                <label class="gc-label">Phone</label>
+                {{ form.phone(class="gc-input", placeholder="Phone number") }}
+                {% if form.phone.errors %}{% for e in form.phone.errors %}<p style="color:var(--accent-red);font-size:13px;margin-top:6px;">⚠ {{ e }}</p>{% endfor %}{% endif %}
+            </div>
+            <button type="submit" class="gc-btn gc-btn-primary" style="width:100%;justify-content:center;">Save Changes →</button>
+        </form>
     </div>
-    <div class="form-group">
-      {{render_field(form.city, class_="form-control")}}
-    </div>
-    <div class="form-group">
-      {{render_field(form.phone, class_="form-control")}}
-    </div>
-    <p><input type="submit" class="btn btn-primary" value="Update"></p>
-  </form>
-</div>
 </div>
 {% endblock %}

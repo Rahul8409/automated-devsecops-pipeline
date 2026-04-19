@@ -1,30 +1,57 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-	<div class="container jumbotron" style=" background-color: #becde5;">
-		<p style="font-size: 25px"><strong style="font-variant: small-caps; ">Name</strong>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;{{result['name']}}</p>
-		<br>
-		<p style="font-size: 25px"><strong style="font-variant: small-caps;">Username</strong>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;{{result['username']}}</p>
-		<br>
-		{% if result['prof']==1 %}
-		<p style="font-size: 25px"><strong style="font-variant: small-caps;">Profession</strong>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;Owner</p>
-		{% else %}
-			{% if result['prof']==2 %}
-			<p style="font-size: 25px"><strong style="font-variant: small-caps;">Profession</strong>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;Receptionist</p>
-			{% else %}
-				{% if result['prof']==3 %}
-				<p style="font-size: 25px"><strong style="font-variant: small-caps;">Profession</strong>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;Trainer</p>
-				{% else %}
-				<p style="font-size: 25px"><strong style="font-variant: small-caps;">Profession</strong>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;Member</p>
-				{% endif %}
-			{% endif %}
-		{% endif %}
-		<br>
-		<p style="font-size: 25px"><strong style="font-variant: small-caps;">Phone</strong>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;{{result['phone']}}</p>
-		<br>
-		<p style="font-size: 25px"><strong style="font-variant: small-caps;">Street</strong>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;{{result['street']}}</p>
-		<br>
-		<p style="font-size: 25px"><strong style="font-variant: small-caps;">City</strong>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;{{result['city']}}</p>
-		<br>
-	</div>
+<div style="max-width: 560px; margin: 0 auto;">
+    <div style="margin-bottom: 28px;">
+        <a href="javascript:history.back()" style="font-family: var(--font-display); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); text-decoration: none;">← Back</a>
+        <h2 style="font-family: var(--font-display); font-size: 36px; font-weight: 800; margin-top: 12px;">
+            User <span style="color: var(--accent);">Profile</span>
+        </h2>
+    </div>
+
+    <div class="gc-card" style="border-top: 2px solid var(--accent);">
+        <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border);">
+            <div style="width: 64px; height: 64px; background: var(--accent-dim); border: 2px solid var(--border-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <span style="font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--accent);">{{ result.name[0] | upper }}</span>
+            </div>
+            <div>
+                <h3 style="font-family: var(--font-display); font-size: 24px; font-weight: 700; margin: 0;">{{ result.name }}</h3>
+                <p style="color: var(--text-muted); font-size: 13px; margin: 4px 0 0;">@{{ result.username }}</p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px;">
+            <div>
+                <p class="gc-section-title" style="margin-bottom: 6px;">Role</p>
+                <p style="font-size: 15px; font-weight: 600;">
+                    {% if result.prof == 1 %}<span style="color: var(--accent);">Admin</span>
+                    {% elif result.prof == 2 %}<span style="color: #4db8ff;">Receptionist</span>
+                    {% elif result.prof == 3 %}<span style="color: #00c864;">Trainer</span>
+                    {% else %}<span style="color: var(--text-secondary);">Member</span>
+                    {% endif %}
+                </p>
+            </div>
+            <div>
+                <p class="gc-section-title" style="margin-bottom: 6px;">Phone</p>
+                <p style="font-size: 15px;">{{ result.phone }}</p>
+            </div>
+            <div>
+                <p class="gc-section-title" style="margin-bottom: 6px;">Street</p>
+                <p style="font-size: 15px;">{{ result.street }}</p>
+            </div>
+            <div>
+                <p class="gc-section-title" style="margin-bottom: 6px;">City</p>
+                <p style="font-size: 15px;">{{ result.city }}</p>
+            </div>
+            {% if result.time %}
+            <div>
+                <p class="gc-section-title" style="margin-bottom: 6px;">Member Since</p>
+                <p style="font-size: 15px; color: var(--text-secondary);">{{ result.time }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <a href="{{ url_for('edit_profile', username=result.username) }}" class="gc-btn gc-btn-outline" style="width: 100%; justify-content: center;">Edit Profile</a>
+    </div>
+</div>
 {% endblock %}

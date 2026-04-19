@@ -1,16 +1,32 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-<div class="text-white">
-	<h1>Select the one you want to remove</h1>
-  {% from "includes/_formhelpers.html" import render_field %}
-  <form method="POST" action="">
-  <div class = "dropdown">
-    <div class="form-group">
-      {{render_field(form.username, class_="form-control")}}
+<div style="max-width: 480px; margin: 0 auto;">
+    <div style="margin-bottom: 28px;">
+        <a href="{{ url_for('adminDash') }}" style="font-family: var(--font-display); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); text-decoration: none;">← Back to Dashboard</a>
+        <h2 style="font-family: var(--font-display); font-size: 36px; font-weight: 800; margin-top: 12px;">
+            <span style="color: var(--accent-red);">Remove</span> Entry
+        </h2>
     </div>
+
+    <div class="gc-card" style="border-top: 2px solid var(--accent-red);">
+        <form action="" method="POST">
+            <div class="gc-form-group" style="margin-bottom: 28px;">
+                <label class="gc-label">{{ form.username.label.text }}</label>
+                {{ form.username(class="gc-input", style="appearance: auto; cursor: pointer;") }}
+                {% if form.username.errors %}
+                    {% for error in form.username.errors %}
+                        <p style="color: var(--accent-red); font-size: 13px; margin-top: 6px;">⚠ {{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div style="background: rgba(255,59,59,0.06); border: 1px solid rgba(255,59,59,0.15); border-radius: 6px; padding: 14px 16px; margin-bottom: 24px;">
+                <p style="font-size: 13px; color: var(--accent-red); margin: 0;">⚠ This action is permanent and cannot be undone.</p>
+            </div>
+
+            <button type="submit" class="gc-btn gc-btn-danger" style="width: 100%; justify-content: center;">Confirm Delete</button>
+        </form>
     </div>
-    <p><input type="submit" class="btn btn-primary" value="Submit"></p>
-  </form>
 </div>
 {% endblock %}

@@ -1,19 +1,34 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-<div class="text-white">
-  <h1 style="font-family: Georgia, serif;">Select the one you want to remove</h1>
-  <div class="font-italic">
-  {% from "includes/_formhelpers.html" import render_field %}
-  <form method="POST" action="">
-    <div class="form-group">
-      {{render_field(form.name, class_="form-control")}}
+<div style="max-width: 480px; margin: 0 auto;">
+    <div style="margin-bottom: 28px;">
+        <a href="{{ url_for('adminDash') }}" style="font-family: var(--font-display); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); text-decoration: none;">← Back to Dashboard</a>
+        <h2 style="font-family: var(--font-display); font-size: 36px; font-weight: 800; margin-top: 12px;"><span style="color: var(--accent-red);">Remove</span> Equipment</h2>
     </div>
-    <div class="form-group">
-      {{render_field(form.count, class_="form-control")}}
+
+    <div class="gc-card" style="border-top: 2px solid var(--accent-red);">
+        <form action="" method="POST">
+            <div class="gc-form-group">
+                <label class="gc-label">Select Equipment</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px;">
+                    {% for subfield in form.name %}
+                    <label style="cursor:pointer;display:flex;align-items:center;gap:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;padding:10px 16px;">
+                        {{ subfield(style="accent-color:var(--accent-red);") }}
+                        <span style="font-family:var(--font-display);font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-primary);">{{ subfield.label.text }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="gc-form-group" style="margin-bottom: 28px;">
+                <label class="gc-label">Quantity to Remove</label>
+                {{ form.count(class="gc-input", placeholder="How many units to remove") }}
+                {% if form.count.errors %}
+                    {% for e in form.count.errors %}<p style="color:var(--accent-red);font-size:13px;margin-top:6px;">⚠ {{ e }}</p>{% endfor %}
+                {% endif %}
+            </div>
+            <button type="submit" class="gc-btn gc-btn-danger" style="width:100%;justify-content:center;">Remove Equipment</button>
+        </form>
     </div>
-    <p><input type="submit" class="btn btn-primary" value="Submit"></p>
-  </form>
-</div>
 </div>
 {% endblock %}

@@ -1,66 +1,93 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-	<div class="container" >
-		<div class="text-white">
-		<h1 style><small> {{user}}</small></h1>
-	</div>
-		<div class="jumbotron" style="background-color: #f2deee ">
-		<h2 class = "text-center">{{plan}}</h2>
-
-		<div class="row text-center">
-		{% for exercise in scheme %}
-
-		<div class="col-sm-4 text">
-		
-		<h4>{{exercise['exercise']}}</h4>
-		<p>sets --&nbsp;&nbsp;{{exercise['sets']}}</p>
-		<p>reps --&nbsp;&nbsp;{{exercise['reps']}}</p>
-
-		</div>
-		
-		{% endfor %}
-		</div>
-		
-		</div>
-		<table style="width:100%; font-size: 20px;" class="text-white table-hover table-bordered table-dark table-striped">
-  <tr>
-    <th class="text-center " height="50"><strong>DATE</strong></th>
-    <th class="text-center " height="50"><strong>REPORT</strong></th> 
-    <th class="text-center " height="50"><strong>RESULT</strong></th> 
-  </tr>
-		{% for each in progress %}
-		<tr>
-		<td class="text-center" height="50">{{each['date']}}</td>
-		<td class="text-center" height="50">{{each['daily_result']}}</td>
-		{% if each['rate']==1 %}
-		<td class="text-center" style="color:green;" height="50">good</td>
-		{% endif %}
-		{% if each['rate']==2 %}
-		<td class="text-center" style="color: yellow;" height="50">average</td>
-		{% endif %}
-		{% if each['rate']==3 %}
-		<td class="text-center" style="color: red;" height="50">poor</td>
-		{% endif %}
-	</tr>
-		{% endfor %}
-	</table>
-	<br>
-	<br>
-	<div class="jumbotron" style="background-color: #efd7b6; ">
-	<h1>Performance Bar</h1>
-	<br>
-	  <div class="progress", style="height:30px">
-  <div class="progress-bar bg-success  progress-bar-striped progress-bar-animated text-dark font-weight-bold font-italic" style="width:{{good}}%; height:30px" >
-    Good {{good}}%
-  </div>
-  <div class="progress-bar bg-warning  progress-bar-striped progress-bar-animated text-dark font-weight-bold font-italic" style="width:{{average}}%; height:30px">
-    Average {{average}}%
-  </div>
-  <div class="progress-bar bg-danger  progress-bar-striped progress-bar-animated text-dark font-weight-bold font-italic " style="width:{{poor}}%; height:30px">
-    Poor {{poor}}%
-  </div>
-</div> 
+<div style="margin-bottom: 36px;">
+    <p class="gc-section-title">Member Dashboard</p>
+    <h1 style="font-family: var(--font-display); font-size: 42px; font-weight: 800; margin-bottom: 8px;">
+        Hello, <span style="color: var(--accent);">{{ user }}</span>
+    </h1>
+    <p style="color: var(--text-secondary);">Plan: <strong style="color: var(--text-primary);">{{ plan }}</strong></p>
 </div>
-	</div> 
+
+<!-- Stats Row -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px; max-width: 560px;">
+    <div class="gc-card" style="text-align: center; border-top: 2px solid #00c864;">
+        <p class="gc-section-title" style="margin-bottom: 8px;">Good</p>
+        <p style="font-family: var(--font-display); font-size: 36px; font-weight: 800; color: #00c864; line-height: 1;">{{ good }}%</p>
+    </div>
+    <div class="gc-card" style="text-align: center; border-top: 2px solid #ffb400;">
+        <p class="gc-section-title" style="margin-bottom: 8px;">Average</p>
+        <p style="font-family: var(--font-display); font-size: 36px; font-weight: 800; color: #ffb400; line-height: 1;">{{ average }}%</p>
+    </div>
+    <div class="gc-card" style="text-align: center; border-top: 2px solid var(--accent-red);">
+        <p class="gc-section-title" style="margin-bottom: 8px;">Poor</p>
+        <p style="font-family: var(--font-display); font-size: 36px; font-weight: 800; color: var(--accent-red); line-height: 1;">{{ poor }}%</p>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+
+    <div>
+        <p class="gc-section-title">Your Exercise Plan</p>
+        <div class="gc-table-wrap">
+            {% if scheme %}
+            <table class="gc-table">
+                <thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th></tr></thead>
+                <tbody>
+                    {% for s in scheme %}
+                    <tr>
+                        <td style="font-weight:600;">{{ s.exercise }}</td>
+                        <td style="color:var(--accent);font-family:var(--font-display);font-weight:700;">{{ s.sets }}</td>
+                        <td style="color:#4db8ff;font-family:var(--font-display);font-weight:700;">{{ s.reps }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="padding:32px;text-align:center;color:var(--text-muted);">
+                <p style="font-family:var(--font-display);letter-spacing:2px;text-transform:uppercase;font-size:13px;">No plan assigned yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+        <p class="gc-section-title">Progress Log</p>
+        <div class="gc-table-wrap">
+            {% if progress %}
+            <table class="gc-table">
+                <thead><tr><th>Date</th><th>Result</th><th>Rating</th></tr></thead>
+                <tbody>
+                    {% for p in progress %}
+                    <tr>
+                        <td style="font-size:13px;color:var(--text-secondary);">{{ p.date }}</td>
+                        <td style="font-size:13px;">{{ p.daily_result }}</td>
+                        <td>
+                            {% if p.rate == 1 or p.rate == '1' %}
+                                <span class="gc-badge gc-badge-standard">Good</span>
+                            {% elif p.rate == 2 or p.rate == '2' %}
+                                <span style="background:rgba(255,180,0,0.1);color:#ffb400;border:1px solid rgba(255,180,0,0.2);" class="gc-badge">Avg</span>
+                            {% else %}
+                                <span class="gc-badge" style="background:rgba(255,59,59,0.1);color:var(--accent-red);border:1px solid rgba(255,59,59,0.2);">Poor</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="padding:32px;text-align:center;color:var(--text-muted);">
+                <p style="font-family:var(--font-display);letter-spacing:2px;text-transform:uppercase;font-size:13px;">No progress logged yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+<div style="margin-top: 28px; display: flex; gap: 12px;">
+    <a href="{{ url_for('profile', username=user) }}" class="gc-btn gc-btn-outline">View Profile</a>
+    <a href="{{ url_for('update_password', username=user) }}" class="gc-btn gc-btn-outline">Change Password</a>
+</div>
+
 {% endblock %}

@@ -1,58 +1,109 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-	<div class="container">
-		<h1><small class="text-white">Welcome</small><span class="font-italic font-weight-bold text-danger"> {{session.username}}</span></h1>
-    <div class="jumbotron" style="background-color: #94bfac;">
-		<h1 style="font-variant: small-caps;">Equipment</h1>
-    <div class="jumbotron" style="background-color: white;">
-		{% for each in equips %}
-			<p style="font-size: 20px " class="font-italic">{{each['name']}}&nbsp;&nbsp;<strong>x{{each['count']}}</strong></p>
-		{% endfor %}
-    </div>
+<div style="margin-bottom: 36px;">
+    <p class="gc-section-title">Trainer Panel</p>
+    <h1 style="font-family: var(--font-display); font-size: 42px; font-weight: 800; margin-bottom: 8px;">
+        Welcome, <span style="color: #00c864;">{{ session.username }}</span>
+    </h1>
+    <p style="color: var(--text-secondary);">You are managing <strong style="color: var(--text-primary);">{{ members|length }}</strong> members.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;">
+
+    <div>
+        <p class="gc-section-title">Your Members</p>
+        <div class="gc-table-wrap">
+            {% if members %}
+            <table class="gc-table">
+                <thead><tr><th>Username</th></tr></thead>
+                <tbody>
+                    {% for m in members %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('memberDash', username=m.username) }}" style="color: var(--accent); text-decoration: none; font-weight: 600;">{{ m.username }}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="padding: 32px; text-align: center; color: var(--text-muted);">
+                <p style="font-family: var(--font-display); letter-spacing: 2px; text-transform: uppercase; font-size: 13px;">No members assigned</p>
+            </div>
+            {% endif %}
+        </div>
     </div>
 
-
-    <div class="jumbotron" style="background-color: #f5e7a1;">
-    <h1 style="font-variant: small-caps;">Evaluation</h1>
-    <div style="font-size: 20px" class="font-italic">
-	{% from "includes/_formhelpers.html" import render_field %}
-  	<form method="POST" action="">
-    <div class="form-group" >
-      {{render_field(form.name, class_="form-control")}}
+    <div>
+        <p class="gc-section-title">Equipment</p>
+        <div class="gc-table-wrap">
+            {% if equips %}
+            <table class="gc-table">
+                <thead><tr><th>Name</th><th>Count</th></tr></thead>
+                <tbody>
+                    {% for e in equips %}
+                    <tr>
+                        <td>{{ e.name }}</td>
+                        <td><span style="color: var(--accent); font-weight: 700; font-family: var(--font-display);">{{ e.count }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="padding: 32px; text-align: center; color: var(--text-muted);">
+                <p style="font-family: var(--font-display); letter-spacing: 2px; text-transform: uppercase; font-size: 13px;">No equipment listed</p>
+            </div>
+            {% endif %}
+        </div>
     </div>
-    <div class="form-group">
-      {{render_field(form.date, class_="form-control")}}
-    </div>
-    <div class="form-group">
-      {{render_field(form.report, class_="form-control")}}
-    </div>
-    <div class="form-group" >
-      {{render_field(form.rate, class_="form-control")}}
-    </div>
-    <p><input type="submit" class="btn btn-primary" value="Submit"></p>
-  </form>
-  </div>
-  </div>
-  <br>
-  <br>
 
+</div>
 
-  <div class="jumbotron" style="background-color: #8fc693;">
-  <h1 style="font-variant: small-caps;">Members that train under you</h1>
-  <br>
-  {% for each in members %}
-    <a href="{{url_for('memberDash', username = each['username'])}}"><button type="button" class="btn btn-outline-dark">{{each['username']}}</button></a>
-    <br>
-    <br>
-  {% endfor %}
-  </div>
+<p class="gc-section-title">Log Member Progress</p>
+<div class="gc-card" style="border-top: 2px solid #00c864; max-width: 560px;">
+    <form action="" method="POST">
+        <div class="gc-form-group">
+            <label class="gc-label">Select Member</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                {% for subfield in form.name %}
+                <label style="cursor:pointer;display:flex;align-items:center;gap:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;padding:10px 16px;">
+                    {{ subfield(style="accent-color:var(--accent);") }}
+                    <span style="font-family:var(--font-display);font-size:13px;font-weight:600;text-transform:uppercase;color:var(--text-primary);">{{ subfield.label.text }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="gc-form-group">
+            <label class="gc-label">Date</label>
+            {{ form.date(class="gc-input") }}
+        </div>
+        <div class="gc-form-group">
+            <label class="gc-label">Report</label>
+            {{ form.report(class="gc-input", placeholder="Describe today's session") }}
+        </div>
+        <div class="gc-form-group" style="margin-bottom: 28px;">
+            <label class="gc-label">Result</label>
+            <div style="display: flex; gap: 12px;">
+                {% for subfield in form.rate %}
+                <label style="cursor:pointer;display:flex;align-items:center;gap:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;padding:10px 20px;">
+                    {{ subfield(style="accent-color:var(--accent);") }}
+                    <span style="font-family:var(--font-display);font-size:13px;font-weight:700;text-transform:uppercase;
+                        {% if subfield.label.text == 'good' %}color:#00c864;
+                        {% elif subfield.label.text == 'average' %}color:#ffb400;
+                        {% else %}color:var(--accent-red);{% endif %}">
+                        {{ subfield.label.text }}
+                    </span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="gc-btn gc-btn-primary" style="width:100%;justify-content:center;">Submit Progress →</button>
+    </form>
+</div>
 
+<div style="margin-top: 20px;">
+    <a href="{{ url_for('updatePlans') }}" class="gc-btn gc-btn-outline">Update Plans</a>
+</div>
 
-  <div class="jumbotron" style="background-color: #fbded6">
-  <div class="form-group">
-      <a href = "{{url_for('updatePlans')}}"><button type ="button" class="btn btn-secondary btn-lg" >Update Plans</button></a>
-    </div>
-  </div>
-  </div>
 {% endblock %}
